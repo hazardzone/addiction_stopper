@@ -1,6 +1,40 @@
 // === NICOTINE CONTROL DASHBOARD - JAVASCRIPT ===
 
 /* ================================================
+   COOKIE MANAGEMENT UTILITIES
+   ================================================ */
+
+// Set a cookie that persists across browser sessions
+function setCookie(name, value, daysToExpire = 365) {
+    const date = new Date();
+    date.setTime(date.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + encodeURIComponent(JSON.stringify(value)) + ";" + expires + ";path=/;SameSite=Lax";
+}
+
+// Get cookie value
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.indexOf(nameEQ) === 0) {
+            try {
+                return JSON.parse(decodeURIComponent(cookie.substring(nameEQ.length)));
+            } catch (e) {
+                return null;
+            }
+        }
+    }
+    return null;
+}
+
+// Delete a cookie
+function deleteCookie(name) {
+    setCookie(name, "", -1);
+}
+
+/* ================================================
    DATA STRUCTURE & INITIALIZATION
    ================================================ */
 
@@ -58,13 +92,13 @@ document.addEventListener('DOMContentLoaded', function() {
    DATA MANAGEMENT - LocalStorage & Daily Reset
    ================================================ */
 
-// Load data from localStorage
+// Load data from cookies
 function loadData() {
     const today = getTodayDateString();
-    const savedData = localStorage.getItem('nicotineControlData');
+    const savedData = getCookie('nicotineControlData');
     
     if (savedData) {
-        const saved = JSON.parse(savedData);
+        const saved = savedData;
         
         // If it's a new day, archive yesterday and start fresh
         if (saved.date !== today) {
@@ -89,10 +123,10 @@ function loadData() {
         gameState.date = today;
     }
     
-    // Always load history
-    const savedHistory = localStorage.getItem('nicotineControlHistory');
+    // Always load history from cookies
+    const savedHistory = getCookie('nicotineControlHistory');
     if (savedHistory) {
-        gameState.history = JSON.parse(savedHistory);
+        gameState.history = savedHistory;
     }
     
     saveData();
@@ -122,10 +156,10 @@ function archiveDay(todayData) {
     }
 }
 
-// Save game state to localStorage
+// Save game state to cookies (persists across browser sessions)
 function saveData() {
-    localStorage.setItem('nicotineControlData', JSON.stringify(gameState));
-    localStorage.setItem('nicotineControlHistory', JSON.stringify(gameState.history));
+    setCookie('nicotineControlData', gameState, 365);
+    setCookie('nicotineControlHistory', gameState.history, 365);
 }
 
 // Check if it's a new day every second (for edge cases)
@@ -546,8 +580,8 @@ function setupEventListeners() {
     
     document.getElementById('clearAllBtn').addEventListener('click', function() {
         if (confirm('Clear ALL data including history? This cannot be undone.')) {
-            localStorage.removeItem('nicotineControlData');
-            localStorage.removeItem('nicotineControlHistory');
+            deleteCookie('nicotineControlData');
+            deleteCookie('nicotineControlHistory');
             location.reload();
         }
     });
