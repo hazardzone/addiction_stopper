@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nicotine Control Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🎯 Nicotine Control</h1>
+            <p class="subtitle">Take control, one moment at a time</p>
+        </header>
+
+        <!-- Main Dashboard -->
+        <main class="dashboard">
+
+            <!-- Daily Cigarette Tracker -->
+            <section class="card tracker-card">
+                <h2>📊 Cigarettes Today</h2>
+                <div class="tracker-display">
+                    <div class="big-number" id="cigaretteCount">0</div>
+                    <div class="tracker-info">
+                        <p>Limit: <input type="number" id="dailyLimit" min="1" max="100" value="5" class="limit-input"></p>
+                        <p>Remaining: <span id="remaining">5</span></p>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">0 / 5</p>
+                </div>
+
+                <button class="btn btn-primary" id="addCigaretteBtn">➕ +1 Cigarette</button>
+            </section>
+
+            <!-- Smart Timer -->
+            <section class="card timer-card">
+                <h2>⏱️ Time Between Cigarettes</h2>
+                <div class="timer-settings">
+                    <label for="timerInterval">Minimum interval (minutes):</label>
+                    <input type="number" id="timerInterval" min="5" max="180" value="60" class="limit-input">
+                    <button class="btn btn-secondary" id="updateIntervalBtn">Update</button>
+                </div>
+
+                <div class="timer-display">
+                    <div id="timerStatus" class="timer-status">✓ Ready to use</div>
+                    <div id="timerCountdown" class="timer-countdown" style="display: none;">
+                        <div id="timerValue">00:00</div>
+                        <p>Next cigarette in:</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Craving Button & Breathing Exercise -->
+            <section class="card craving-card">
+                <h2>🫁 Fight the Craving</h2>
+                <button class="btn btn-danger" id="cravingBtn">I have a craving</button>
+                
+                <div id="breathingExercise" class="breathing-exercise" style="display: none;">
+                    <div class="breathing-circle" id="breathingCircle"></div>
+                    <p id="breathingText" class="breathing-text">Breathe in...</p>
+                    <p class="craving-message" id="cravingMessage"></p>
+                    <button class="btn btn-secondary" id="skipBreathingBtn">Skip</button>
+                </div>
+            </section>
+
+            <!-- Physical & Mental State -->
+            <section class="card state-card">
+                <h2>💪 How Do You Feel?</h2>
+                
+                <div class="state-group">
+                    <label>Headache</label>
+                    <div class="toggle-group">
+                        <button class="toggle-btn" data-state="headache" data-value="none">None</button>
+                        <button class="toggle-btn" data-state="headache" data-value="mild">Mild</button>
+                        <button class="toggle-btn" data-state="headache" data-value="strong">Strong</button>
+                    </div>
+                </div>
+
+                <div class="state-group">
+                    <label>Energy Level</label>
+                    <div class="toggle-group">
+                        <button class="toggle-btn" data-state="energy" data-value="low">Low</button>
+                        <button class="toggle-btn" data-state="energy" data-value="medium">Medium</button>
+                        <button class="toggle-btn" data-state="energy" data-value="high">High</button>
+                    </div>
+                </div>
+
+                <div class="state-group">
+                    <label>Mood</label>
+                    <div class="toggle-group">
+                        <button class="toggle-btn" data-state="mood" data-value="bad">Bad</button>
+                        <button class="toggle-btn" data-state="mood" data-value="neutral">Neutral</button>
+                        <button class="toggle-btn" data-state="mood" data-value="good">Good</button>
+                    </div>
+                </div>
+
+                <div class="state-group">
+                    <label>Did you exercise today?</label>
+                    <div class="toggle-group">
+                        <button class="toggle-btn" data-state="exercise" data-value="no">No</button>
+                        <button class="toggle-btn" data-state="exercise" data-value="yes">Yes</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Joint/Hash Tracker -->
+            <section class="card joint-card">
+                <h2>🍃 Joint / Hash Tracker</h2>
+                <div class="tracker-display">
+                    <div class="big-number" id="jointCount">0</div>
+                    <p class="tracker-note">⚠️ May reduce motivation</p>
+                </div>
+                <button class="btn btn-warning" id="addJointBtn">🍃 Smoked Joint</button>
+            </section>
+
+            <!-- Daily Summary -->
+            <section class="card summary-card">
+                <h2>📈 Today's Summary</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <span class="summary-label">Total Cigarettes</span>
+                        <span class="summary-value" id="summaryTotal">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Cravings Resisted</span>
+                        <span class="summary-value" id="summaryCravings">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Avg Time Between</span>
+                        <span class="summary-value" id="summaryAvgTime">--</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Joints Smoked</span>
+                        <span class="summary-value" id="summaryJoints">0</span>
+                    </div>
+                </div>
+
+                <div class="summary-message" id="summaryMessage">
+                    Track your day to see insights
+                </div>
+
+                <!-- Streak -->
+                <div class="streak-container">
+                    <div class="streak-box" id="streakBox">
+                        <span class="streak-number" id="streakDays">0</span>
+                        <span class="streak-label">Days under limit</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7-Day History Chart -->
+            <section class="card history-card">
+                <h2>📊 Last 7 Days</h2>
+                <div class="chart-container">
+                    <div class="simple-chart" id="simpleChart">
+                        <div class="chart-bars">
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar" style="height: 0%;" title="0"></div>
+                                <span class="chart-label">D-6</span>
+                            </div>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar" style="height: 0%;" title="0"></div>
+                                <span class="chart-label">D-5</span>
+                            </div>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar" style="height: 0%;" title="0"></div>
+                                <span class="chart-label">D-4</span>
+                            </div>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar" style="height: 0%;" title="0"></div>
+                                <span class="chart-label">D-3</span>
+                            </div>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar" style="height: 0%;" title="0"></div>
+                                <span class="chart-label">D-2</span>
+                            </div>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar" style="height: 0%;" title="0"></div>
+                                <span class="chart-label">D-1</span>
+                            </div>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar" style="height: 0%;" title="0"></div>
+                                <span class="chart-label">Today</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Actions -->
+            <section class="card actions-card">
+                <h2>⚙️ Actions</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" id="resetDayBtn">Reset Today</button>
+                    <button class="btn btn-secondary" id="clearAllBtn">Clear All Data</button>
+                    <button class="btn btn-secondary" id="exportBtn">Export Data</button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Remember: You are stronger than your cravings. Every moment of control is a victory. 💪</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
